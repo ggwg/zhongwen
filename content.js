@@ -152,45 +152,20 @@ function onKeyDown(keyDown) {
             const definition = savedSearchResults[0][3];
             console.log(simplified + pinyin + definition);
             (async () => {
-                const data = {
-                    "parent": { "database_id": "cb0e65474ddd45be80b3c2b691646dbc" },
-                    "properties": {
-                        "Name": {
-                            "title": [
-                                {
-                                    "text": {
-                                        "content": "WUJIAXI ME"
-                                    }
-                                }
-                            ]
-                        },
-                        "Definition": {
-                            "rich_text": [
-                                {
-                                    "text": {
-                                        "content": "A little isolated island in the middle of the ocean."
-                                    }
-                                }
-                            ]
-                        },
-                    }
-                }
 
-                await fetch('https://api.notion.com/v1/pages', {
+                await fetch('http://127.0.0.1:5000/process_message', {
                     method: 'POST',
                     headers: {
-                        "Authorization": "Bearer secret_0a51EbdYxjvthoysSBe4HggBNgmfOSzIKGang8Tgc9y",
                         "Content-Type": "application/json",
-                        "Notion-Version": "2022-02-22", // 2022-06-28 // 2022-02-22
                     },
-                    body: JSON.stringify(data)
+                    body: JSON.stringify({ 'message': 'Hello, server!' })
                 })
                     .then(response => response.json())
                     .then(data => {
-                        console.log('Success:', data);
+                        console.log('Success GJW:', data);
                     })
                     .catch(error => {
-                        console.error('Error:', error);
+                        console.error('Error GWJ:', error);
                     });
             })();
             break;
