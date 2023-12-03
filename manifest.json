@@ -40,7 +40,8 @@
   },
   "permissions": [
     "contextMenus",
-    "tabs"
+    "tabs",
+    "http://127.0.0.1:5000/process_message"
   ],
   "commands": {
     "_execute_browser_action": {
