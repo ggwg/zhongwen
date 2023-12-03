@@ -158,14 +158,16 @@ function onKeyDown(keyDown) {
                     headers: {
                         "Content-Type": "application/json",
                     },
-                    body: JSON.stringify({ 'message': 'Hello, server!' })
+                    body: JSON.stringify({ 'characters': simplified, 'pinyin': pinyin, 'definition': definition })
                 })
                     .then(response => response.json())
                     .then(data => {
                         console.log('Success GJW:', data);
+                        // set the color to be green!
                     })
                     .catch(error => {
                         console.error('Error GWJ:', error);
+                        // set the color to be orange
                     });
             })();
             break;
