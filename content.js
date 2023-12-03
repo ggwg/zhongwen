@@ -48,6 +48,15 @@
 
 'use strict';
 
+const token = 'secret_0a51EbdYxjvthoysSBe4HggBNgmfOSzIKGang8Tgc9y';
+const databaseID = 'cb0e65474ddd45be80b3c2b691646dbc';
+const notionEndpoint = 'https://api.notion.com/v1/pages';
+const notionHeaders = {
+    "Authorization": "Bearer " + token,
+    "Content-Type": "application/json",
+    "Notion-Version": "2022-02-22" // 2022-06-28
+}
+
 let config;
 
 let savedTarget;
@@ -137,21 +146,70 @@ function onKeyDown(keyDown) {
             copyToClipboard(getTextForClipboard());
             break;
 
+        case 88: // 'x'
+            const simplified = savedSearchResults[0][0];
+            const pinyin = savedSearchResults[0][2];
+            const definition = savedSearchResults[0][3];
+            console.log(simplified + pinyin + definition);
+            (async () => {
+                const data = {
+                    "parent": { "database_id": "cb0e65474ddd45be80b3c2b691646dbc" },
+                    "properties": {
+                        "Name": {
+                            "title": [
+                                {
+                                    "text": {
+                                        "content": "WUJIAXI ME"
+                                    }
+                                }
+                            ]
+                        },
+                        "Definition": {
+                            "rich_text": [
+                                {
+                                    "text": {
+                                        "content": "A little isolated island in the middle of the ocean."
+                                    }
+                                }
+                            ]
+                        },
+                    }
+                }
+
+                await fetch('https://api.notion.com/v1/pages', {
+                    method: 'POST',
+                    headers: {
+                        "Authorization": "Bearer secret_0a51EbdYxjvthoysSBe4HggBNgmfOSzIKGang8Tgc9y",
+                        "Content-Type": "application/json",
+                        "Notion-Version": "2022-02-22", // 2022-06-28 // 2022-02-22
+                    },
+                    body: JSON.stringify(data)
+                })
+                    .then(response => response.json())
+                    .then(data => {
+                        console.log('Success:', data);
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                    });
+            })();
+            break;
+
         case 66: // 'b'
-        {
-            let offset = selStartDelta;
-            for (let i = 0; i < 10; i++) {
-                selStartDelta = --offset;
-                let ret = triggerSearch();
-                if (ret === 0) {
-                    break;
-                } else if (ret === 2) {
-                    savedRangeNode = findPreviousTextNode(savedRangeNode.parentNode, savedRangeNode);
-                    savedRangeOffset = 0;
-                    offset = savedRangeNode.data.length;
+            {
+                let offset = selStartDelta;
+                for (let i = 0; i < 10; i++) {
+                    selStartDelta = --offset;
+                    let ret = triggerSearch();
+                    if (ret === 0) {
+                        break;
+                    } else if (ret === 2) {
+                        savedRangeNode = findPreviousTextNode(savedRangeNode.parentNode, savedRangeNode);
+                        savedRangeOffset = 0;
+                        offset = savedRangeNode.data.length;
+                    }
                 }
             }
-        }
             break;
 
         case 71: // 'g'
@@ -188,51 +246,51 @@ function onKeyDown(keyDown) {
             break;
 
         case 82: // 'r'
-        {
-            let entries = [];
-            for (let j = 0; j < savedSearchResults.length; j++) {
-                let entry = {
-                    simplified: savedSearchResults[j][0],
-                    traditional: savedSearchResults[j][1],
-                    pinyin: savedSearchResults[j][2],
-                    definition: savedSearchResults[j][3]
-                };
-                entries.push(entry);
-            }
-
-            chrome.runtime.sendMessage({
-                'type': 'add',
-                'entries': entries
-            });
-
-            showPopup('Added to word list.<p>Press Alt+W to open word list.', null, -1, -1);
-        }
-            break;
-
-        case 83: // 's'
             {
-
-                // https://www.skritter.com/vocab/api/add?from=Chrome&lang=zh&word=浏览&trad=瀏 覽&rdng=liú lǎn&defn=to skim over; to browse
-
-                let skritter = 'https://skritter.com';
-                if (config.skritterTLD === 'cn') {
-                    skritter = 'https://skritter.cn';
+                let entries = [];
+                for (let j = 0; j < savedSearchResults.length; j++) {
+                    let entry = {
+                        simplified: savedSearchResults[j][0],
+                        traditional: savedSearchResults[j][1],
+                        pinyin: savedSearchResults[j][2],
+                        definition: savedSearchResults[j][3]
+                    };
+                    entries.push(entry);
                 }
 
-                skritter +=
-                    '/vocab/api/add?from=zhongwen&ref=zhongwen&lang=zh&word=' +
-                    encodeURIComponent(savedSearchResults[0][0]) +
-                    '&trad=' + encodeURIComponent(savedSearchResults[0][1]) +
-                    '&rdng=' + encodeURIComponent(savedSearchResults[0][4]) +
-                    '&defn=' + encodeURIComponent(savedSearchResults[0][3]);
-
                 chrome.runtime.sendMessage({
-                    type: 'open',
-                    tabType: 'skritter',
-                    url: skritter
+                    'type': 'add',
+                    'entries': entries
                 });
+
+                showPopup('Added to word list.<p>Press Alt+W to open word list.', null, -1, -1);
             }
             break;
+
+        // case 83: // 's' // Disabled
+        //     {
+
+        //         // https://www.skritter.com/vocab/api/add?from=Chrome&lang=zh&word=浏览&trad=瀏 覽&rdng=liú lǎn&defn=to skim over; to browse
+
+        //         let skritter = 'https://skritter.com';
+        //         if (config.skritterTLD === 'cn') {
+        //             skritter = 'https://skritter.cn';
+        //         }
+
+        //         skritter +=
+        //             '/vocab/api/add?from=zhongwen&ref=zhongwen&lang=zh&word=' +
+        //             encodeURIComponent(savedSearchResults[0][0]) +
+        //             '&trad=' + encodeURIComponent(savedSearchResults[0][1]) +
+        //             '&rdng=' + encodeURIComponent(savedSearchResults[0][4]) +
+        //             '&defn=' + encodeURIComponent(savedSearchResults[0][3]);
+
+        //         chrome.runtime.sendMessage({
+        //             type: 'open',
+        //             tabType: 'skritter',
+        //             url: skritter
+        //         });
+        //     }
+        //     break;
 
         case 84: // 't'
             {
@@ -265,13 +323,13 @@ function onKeyDown(keyDown) {
             }
             break;
 
-        case 88: // 'x'
+        case 89: // 'y'
             altView = 0;
             popY -= 20;
             triggerSearch();
             break;
 
-        case 89: // 'y'
+        case 85: // 'u'
             altView = 0;
             popY += 20;
             triggerSearch();
@@ -538,10 +596,10 @@ function triggerSearch() {
     savedSelEndList = selEndList;
 
     chrome.runtime.sendMessage({
-            'type': 'search',
-            'text': text,
-            'originalText': originalText
-        },
+        'type': 'search',
+        'text': text,
+        'originalText': originalText
+    },
         processSearchResult
     );
 
@@ -720,7 +778,7 @@ function showPopup(html, elem, x, y, looseWidth) {
                 if (t >= 0) {
                     y = t;
                 }
-            } else  {
+            } else {
                 y += v;
             }
 
@@ -890,30 +948,15 @@ function makeHtml(result, showToneColors) {
         entry = result.data[i][0].match(/^([^\s]+?)\s+([^\s]+?)\s+\[(.*?)\]?\s*\/(.+)\//);
         if (!entry) continue;
 
-        // Hanzi
+        // Hanzi (Simplified)
 
-        if (config.simpTrad === 'auto') {
+        let word = result.data[i][1];
 
-            let word = result.data[i][1];
-
-            hanziClass = 'w-hanzi';
-            if (config.fontSize === 'small') {
-                hanziClass += '-small';
-            }
-            html += '<span class="' + hanziClass + '">' + word + '</span>&nbsp;';
-
-        } else {
-
-            hanziClass = 'w-hanzi';
-            if (config.fontSize === 'small') {
-                hanziClass += '-small';
-            }
-            html += '<span class="' + hanziClass + '">' + entry[2] + '</span>&nbsp;';
-            if (entry[1] !== entry[2]) {
-                html += '<span class="' + hanziClass + '">' + entry[1] + '</span>&nbsp;';
-            }
-
+        hanziClass = 'w-hanzi';
+        if (config.fontSize === 'small') {
+            hanziClass += '-small';
         }
+        html += '<span class="' + hanziClass + '">' + word + '</span>&nbsp;';
 
         // Pinyin
 
