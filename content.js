@@ -162,7 +162,7 @@ function onKeyDown(keyDown) {
                     .catch(error => {
                         console.error('Error:', error);
 
-                        // set the color of window to be green
+                        // set the color of window to be orange
                         let popup = document.getElementById('zhongwen-window')
                         popup.classList.add('background-orange');
                     });
