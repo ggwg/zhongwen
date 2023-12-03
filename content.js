@@ -153,12 +153,18 @@ function onKeyDown(keyDown) {
                 })
                     .then(response => response.json())
                     .then(data => {
-                        console.log('Success GJW:', data);
-                        // set the color to be green!
+                        console.log('Success:', data);
+
+                        // set the color of window to be green
+                        let popup = document.getElementById('zhongwen-window')
+                        popup.classList.add('background-green');
                     })
                     .catch(error => {
-                        console.error('Error GWJ:', error);
-                        // set the color to be orange
+                        console.error('Error:', error);
+
+                        // set the color of window to be green
+                        let popup = document.getElementById('zhongwen-window')
+                        popup.classList.add('background-orange');
                     });
             })();
             break;
@@ -234,31 +240,6 @@ function onKeyDown(keyDown) {
                 showPopup('Added to word list.<p>Press Alt+W to open word list.', null, -1, -1);
             }
             break;
-
-        // case 83: // 's' // Disabled
-        //     {
-
-        //         // https://www.skritter.com/vocab/api/add?from=Chrome&lang=zh&word=浏览&trad=瀏 覽&rdng=liú lǎn&defn=to skim over; to browse
-
-        //         let skritter = 'https://skritter.com';
-        //         if (config.skritterTLD === 'cn') {
-        //             skritter = 'https://skritter.cn';
-        //         }
-
-        //         skritter +=
-        //             '/vocab/api/add?from=zhongwen&ref=zhongwen&lang=zh&word=' +
-        //             encodeURIComponent(savedSearchResults[0][0]) +
-        //             '&trad=' + encodeURIComponent(savedSearchResults[0][1]) +
-        //             '&rdng=' + encodeURIComponent(savedSearchResults[0][4]) +
-        //             '&defn=' + encodeURIComponent(savedSearchResults[0][3]);
-
-        //         chrome.runtime.sendMessage({
-        //             type: 'open',
-        //             tabType: 'skritter',
-        //             url: skritter
-        //         });
-        //     }
-        //     break;
 
         case 84: // 't'
             {

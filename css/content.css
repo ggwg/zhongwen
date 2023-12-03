@@ -1,5 +1,6 @@
 /* Generic Styles */
-#zhongwen-window, #zhongwen-window * {
+#zhongwen-window,
+#zhongwen-window * {
   width: auto;
   height: auto;
   background: transparent;
@@ -77,6 +78,20 @@
   font-weight: bold;
 }
 
+/* Green HTTP Success Background */
+#zhongwen-window.background-green,
+#zhongwen-window.background-green * {
+  color: #000000;
+  background: #aeffa4 !important;
+}
+
+/* Orange HTTP Error Background */
+#zhongwen-window.background-orange,
+#zhongwen-window.background-orange * {
+  color: #000000;
+  background: #ffd0a4 !important;
+}
+
 /* Yellow Background */
 #zhongwen-window.background-yellow,
 #zhongwen-window.background-yellow * {
@@ -96,7 +111,6 @@
 #zhongwen-window.background-yellow .vocab {
   color: #00008b;
 }
-
 
 /* Lightblue Background */
 #zhongwen-window.background-lightblue,
